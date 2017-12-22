@@ -14,53 +14,53 @@ namespace TwoStepAuthenticator
          *
          * @since 0.5.0
          */
-        public static sealed String RNG_ALGORITHM = "com.warrenstrange.googleauth.rng.algorithm";
+        public const String RNG_ALGORITHM = "com.warrenstrange.googleauth.rng.algorithm";
 
-    /**
-     * The system property to specify the random number generator provider to use.
-     *
-     * @since 0.5.0
-     */
-    public static sealed String RNG_ALGORITHM_PROVIDER = "com.warrenstrange.googleauth.rng.algorithmProvider";
+        /**
+         * The system property to specify the random number generator provider to use.
+         *
+         * @since 0.5.0
+         */
+        public const String RNG_ALGORITHM_PROVIDER = "com.warrenstrange.googleauth.rng.algorithmProvider";
 
-    /**
-     * The logger for this class.
-     */
-    private static sealed Logger LOGGER = Logger.getLogger(GoogleAuthenticator.class.getName());
+        /**
+         * The logger for this class.
+         */
+        //private const Logger LOGGER = Logger.getLogger(Authenticator.class.getName());
 
     /**
      * The number of bits of a secret key in binary form. Since the Base32
      * encoding with 8 bit characters introduces an 160% overhead, we just need
      * 80 bits (10 bytes) to generate a 16 bytes Base32-encoded secret key.
      */
-    private static sealed int SECRET_BITS = 80;
+    private const int SECRET_BITS = 80;
 
         /**
          * Number of scratch codes to generate during the key generation.
-         * We are using Google's default of providing 5 scratch codes.
+         * We are using 's default of providing 5 scratch codes.
          */
-        private static sealed int SCRATCH_CODES = 5;
+        private const int SCRATCH_CODES = 5;
 
         /**
          * Number of digits of a scratch code represented as a decimal integer.
          */
-        private static sealed int SCRATCH_CODE_LENGTH = 8;
+        private const int SCRATCH_CODE_LENGTH = 8;
 
         /**
          * Modulus used to truncate the scratch code.
          */
-        public static sealed int SCRATCH_CODE_MODULUS = (int)Math.pow(10, SCRATCH_CODE_LENGTH);
+        public const int SCRATCH_CODE_MODULUS = (int)Math.pow(10, SCRATCH_CODE_LENGTH);
 
         /**
          * Magic number representing an invalid scratch code.
          */
-        private static sealed int SCRATCH_CODE_INVALID = -1;
+        private const int SCRATCH_CODE_INVALID = -1;
 
         /**
-         * Length in bytes of each scratch code. We're using Google's default of
+         * Length in bytes of each scratch code. We're using 's default of
          * using 4 bytes per scratch code.
          */
-        private static sealed int BYTES_PER_SCRATCH_CODE = 4;
+        private const int BYTES_PER_SCRATCH_CODE = 4;
 
         /**
          * The default SecureRandom algorithm to use if none is specified.
@@ -68,8 +68,8 @@ namespace TwoStepAuthenticator
          * @see java.security.SecureRandom#getInstance(String)
          * @since 0.5.0
          */
-        @SuppressWarnings("SpellCheckingInspection")
-    private static sealed String DEFAULT_RANDOM_NUMBER_ALGORITHM = "SHA1PRNG";
+       
+    private const String DEFAULT_RANDOM_NUMBER_ALGORITHM = "SHA1PRNG";
 
     /**
      * The default random number algorithm provider to use if none is specified.
@@ -77,12 +77,12 @@ namespace TwoStepAuthenticator
      * @see java.security.SecureRandom#getInstance(String)
      * @since 0.5.0
      */
-    private static sealed String DEFAULT_RANDOM_NUMBER_ALGORITHM_PROVIDER = "SUN";
+    private const String DEFAULT_RANDOM_NUMBER_ALGORITHM_PROVIDER = "SUN";
 
     /**
      * The configuration used by the current instance.
      */
-    private sealed GoogleAuthenticatorConfig config;
+    private static AuthenticatorConfig config;
 
     /**
      * The internal SecureRandom instance used by this class.  Since Java 7
@@ -99,12 +99,12 @@ namespace TwoStepAuthenticator
         private ICredentialRepository credentialRepository;
         private boolean credentialRepositorySearched;
 
-        public GoogleAuthenticator()
+        public Authenticator()
         {
-            config = new GoogleAuthenticatorConfig();
+            config = new AuthenticatorConfig();
         }
 
-        public GoogleAuthenticator(GoogleAuthenticatorConfig config)
+        public Authenticator(AuthenticatorConfig config)
         {
             if (config == null)
             {
@@ -204,7 +204,7 @@ namespace TwoStepAuthenticator
                 LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
 
                 // We're not disclosing internal error details to our clients.
-                throw new GoogleAuthenticatorException("The operation cannot be "
+                throw new AuthenticatorException("The operation cannot be "
                         + "performed now.");
             }
             }
@@ -235,7 +235,7 @@ namespace TwoStepAuthenticator
                 byte[] decodedKey = decodeSecret(secret);
 
                 // convert unix time into a 30 second "window" as specified by the
-                // TOTP specification. Using Google's default interval of 30 seconds.
+                // TOTP specification. Using 's default interval of 30 seconds.
                 sealed long timeWindow = getTimeWindowFromTime(timestamp);
 
                 // Calculating the verification code of the given key in each of the
@@ -277,7 +277,7 @@ namespace TwoStepAuthenticator
             }
 
             @Override
-        public GoogleAuthenticatorKey createCredentials()
+        public AuthenticatorKey createCredentials()
             {
 
                 // Allocating a buffer sufficiently large to hold the bytes required by
@@ -298,7 +298,7 @@ namespace TwoStepAuthenticator
                 List<Integer> scratchCodes = calculateScratchCodes(buffer);
 
                 return
-                        new GoogleAuthenticatorKey
+                        new AuthenticatorKey
                                 .Builder(generatedKey)
                                 .setConfig(config)
                                 .setVerificationCode(validationCode)
@@ -307,7 +307,7 @@ namespace TwoStepAuthenticator
             }
 
             @Override
-        public GoogleAuthenticatorKey createCredentials(String userName)
+        public AuthenticatorKey createCredentials(String userName)
             {
                 // Further validation will be performed by the configured provider.
                 if (userName == null)
@@ -315,7 +315,7 @@ namespace TwoStepAuthenticator
                     throw new IllegalArgumentException("User name cannot be null.");
                 }
 
-                GoogleAuthenticatorKey key = createCredentials();
+                AuthenticatorKey key = createCredentials();
 
                 ICredentialRepository repository = getValidCredentialRepository();
                 repository.saveUserCredentials(
@@ -479,14 +479,14 @@ namespace TwoStepAuthenticator
 
             @Override
         public boolean authorize(String secret, int verificationCode)
-                throws GoogleAuthenticatorException
+                throws AuthenticatorException
         {
                 return authorize(secret, verificationCode, new Date().getTime());
             }
 
             @Override
         public boolean authorize(String secret, int verificationCode, long time)
-                throws GoogleAuthenticatorException
+                throws AuthenticatorException
         {
                 // Checking user input and failing if the secret key was not provided.
                 if (secret == null)
@@ -510,13 +510,13 @@ namespace TwoStepAuthenticator
 
             @Override
         public boolean authorizeUser(String userName, int verificationCode)
-                throws GoogleAuthenticatorException
+                throws AuthenticatorException
         {
                 return authorizeUser(userName, verificationCode, new Date().getTime());
             }
 
             @Override
-        public boolean authorizeUser(String userName, int verificationCode, long time) throws GoogleAuthenticatorException
+        public boolean authorizeUser(String userName, int verificationCode, long time) throws AuthenticatorException
         {
                 ICredentialRepository repository = getValidCredentialRepository();
 

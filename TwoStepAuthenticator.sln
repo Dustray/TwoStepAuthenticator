@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwoStepAuthenticatorTest", "TwoStepAuthenticatorTest\TwoStepAuthenticatorTest.csproj", "{7CA7316D-AEB0-44B9-BA8D-9B2BED9EDC61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwoStepAuthenticator", "TwoStepAuthenticator\TwoStepAuthenticator.csproj", "{0F3438E0-DE41-4556-9DEF-D9A6112D30A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DustrayLibrary", "DateTimeUnit\DustrayLibrary.csproj", "{46255F1A-9FCE-4C53-A9FE-B06A55B269BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{7CA7316D-AEB0-44B9-BA8D-9B2BED9EDC61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CA7316D-AEB0-44B9-BA8D-9B2BED9EDC61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CA7316D-AEB0-44B9-BA8D-9B2BED9EDC61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F3438E0-DE41-4556-9DEF-D9A6112D30A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F3438E0-DE41-4556-9DEF-D9A6112D30A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F3438E0-DE41-4556-9DEF-D9A6112D30A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F3438E0-DE41-4556-9DEF-D9A6112D30A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46255F1A-9FCE-4C53-A9FE-B06A55B269BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46255F1A-9FCE-4C53-A9FE-B06A55B269BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46255F1A-9FCE-4C53-A9FE-B06A55B269BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46255F1A-9FCE-4C53-A9FE-B06A55B269BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
