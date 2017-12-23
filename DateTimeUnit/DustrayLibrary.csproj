@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="DateTimeUnit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StrongRandom.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

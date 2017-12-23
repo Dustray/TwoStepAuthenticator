@@ -14,47 +14,47 @@ namespace TwoStepAuthenticator
          *
          * @since 0.5.0
          */
-        public const String RNG_ALGORITHM = "com.warrenstrange.googleauth.rng.algorithm";
+        public const String RNG_ALGORITHM = "com.warrenstrange. auth.rng.algorithm";
 
         /**
          * The system property to specify the random number generator provider to use.
          *
          * @since 0.5.0
          */
-        public const String RNG_ALGORITHM_PROVIDER = "com.warrenstrange.googleauth.rng.algorithmProvider";
+        public const String RNG_ALGORITHM_PROVIDER = "com.warrenstrange. auth.rng.algorithmProvider";
 
         /**
          * The logger for this class.
          */
         //private const Logger LOGGER = Logger.getLogger(Authenticator.class.getName());
 
-    /**
-     * The number of bits of a secret key in binary form. Since the Base32
-     * encoding with 8 bit characters introduces an 160% overhead, we just need
-     * 80 bits (10 bytes) to generate a 16 bytes Base32-encoded secret key.
-     */
-    private const int SECRET_BITS = 80;
+        /**
+         * The number of bits of a secret key in binary form. Since the Base32
+         * encoding with 8 bit characters introduces an 160% overhead, we just need
+         * 80 bits (10 bytes) to generate a 16 bytes Base32-encoded secret key.
+         */
+        private static int SECRET_BITS = 80;
 
         /**
          * Number of scratch codes to generate during the key generation.
          * We are using 's default of providing 5 scratch codes.
          */
-        private const int SCRATCH_CODES = 5;
+        private static int SCRATCH_CODES = 5;
 
         /**
-         * Number of digits of a scratch code represented as a decimal integer.
+         * Number of digits of a scratch code represented as a decimal int.
          */
-        private const int SCRATCH_CODE_LENGTH = 8;
+        private static int SCRATCH_CODE_LENGTH = 8;
 
         /**
          * Modulus used to truncate the scratch code.
          */
-        public const int SCRATCH_CODE_MODULUS = (int)Math.pow(10, SCRATCH_CODE_LENGTH);
+        public static int SCRATCH_CODE_MODULUS = (int)Math.Pow(10, SCRATCH_CODE_LENGTH);
 
         /**
          * Magic number representing an invalid scratch code.
          */
-        private const int SCRATCH_CODE_INVALID = -1;
+        private static int SCRATCH_CODE_INVALID = -1;
 
         /**
          * Length in bytes of each scratch code. We're using 's default of
@@ -69,7 +69,7 @@ namespace TwoStepAuthenticator
          * @since 0.5.0
          */
        
-    private const String DEFAULT_RANDOM_NUMBER_ALGORITHM = "SHA1PRNG";
+    private static String DEFAULT_RANDOM_NUMBER_ALGORITHM = "SHA1PRNG";
 
     /**
      * The default random number algorithm provider to use if none is specified.
@@ -77,12 +77,12 @@ namespace TwoStepAuthenticator
      * @see java.security.SecureRandom#getInstance(String)
      * @since 0.5.0
      */
-    private const String DEFAULT_RANDOM_NUMBER_ALGORITHM_PROVIDER = "SUN";
+    private static String DEFAULT_RANDOM_NUMBER_ALGORITHM_PROVIDER = "SUN";
 
     /**
      * The configuration used by the current instance.
      */
-    private static AuthenticatorConfig config;
+    private AuthenticatorConfig config;
 
     /**
      * The internal SecureRandom instance used by this class.  Since Java 7
@@ -92,12 +92,10 @@ namespace TwoStepAuthenticator
      * that it is expected to work correctly in previous versions of the Java
      * platform as well.
      */
-    private ReseedingSecureRandom secureRandom = new ReseedingSecureRandom(
-            getRandomNumberAlgorithm(),
-            getRandomNumberAlgorithmProvider());
+    private  ReseedingSecureRandom secureRandom = new ReseedingSecureRandom();
 
-        private ICredentialRepository credentialRepository;
-        private boolean credentialRepositorySearched;
+        private InterfaceCredentialRepository credentialRepository;
+        private bool credentialRepositorySearched;
 
         public Authenticator()
         {
@@ -108,32 +106,10 @@ namespace TwoStepAuthenticator
         {
             if (config == null)
             {
-                throw new IllegalArgumentException("Configuration cannot be null.");
+                //throw new IllegalArgumentException("Configuration cannot be null.");
             }
 
             this.config = config;
-        }
-
-        /**
-         * @return the random number generator algorithm.
-         * @since 0.5.0
-         */
-        private String getRandomNumberAlgorithm()
-        {
-            return System.getProperty(
-                    RNG_ALGORITHM,
-                    DEFAULT_RANDOM_NUMBER_ALGORITHM);
-        }
-
-        /**
-         * @return the random number generator algorithm provider.
-         * @since 0.5.0
-         */
-        private String getRandomNumberAlgorithmProvider()
-        {
-            return System.getProperty(
-                    RNG_ALGORITHM_PROVIDER,
-                    DEFAULT_RANDOM_NUMBER_ALGORITHM_PROVIDER);
         }
 
         /**
@@ -160,7 +136,7 @@ namespace TwoStepAuthenticator
             }
 
             // Building the secret key specification for the HmacSHA1 algorithm.
-            SecretKeySpec signKey = new SecretKeySpec(key, config.getHmacHashFunction().toString());
+            System.Security.Cryptography.HMACSHA1 signKey = new SecretKeySpec(key, config.getHmacHashFunction().toString());
 
             try
             {
@@ -177,7 +153,7 @@ namespace TwoStepAuthenticator
                 // (RFC4226, 5.3. Generating an HOTP value)
                 int offset = hash[hash.length - 1] & 0xF;
 
-                // We are using a long because Java hasn't got an unsigned integer type
+                // We are using a long because Java hasn't got an unsigned int type
                 // and we need 32 unsigned bits).
                 long truncatedHash = 0;
 
@@ -185,7 +161,7 @@ namespace TwoStepAuthenticator
                 {
                     truncatedHash <<= 8;
 
-                    // Java bytes are signed but we need an unsigned integer:
+                    // Java bytes are signed but we need an unsigned int:
                     // cleaning off all but the LSB.
                     truncatedHash |= (hash[offset + i] & 0xFF);
                 }
@@ -276,7 +252,7 @@ namespace TwoStepAuthenticator
                 }
             }
 
-            @Override
+             
         public AuthenticatorKey createCredentials()
             {
 
@@ -295,7 +271,7 @@ namespace TwoStepAuthenticator
                 int validationCode = calculateValidationCode(secretKey);
 
                 // Calculate scratch codes
-                List<Integer> scratchCodes = calculateScratchCodes(buffer);
+                List<int> scratchCodes = calculateScratchCodes(buffer);
 
                 return
                         new AuthenticatorKey
@@ -306,7 +282,7 @@ namespace TwoStepAuthenticator
                                 .build();
             }
 
-            @Override
+             
         public AuthenticatorKey createCredentials(String userName)
             {
                 // Further validation will be performed by the configured provider.
@@ -327,9 +303,9 @@ namespace TwoStepAuthenticator
                 return key;
             }
 
-            private List<Integer> calculateScratchCodes(byte[] buffer)
+            private List<int> calculateScratchCodes(byte[] buffer)
             {
-                List<Integer> scratchCodes = new ArrayList<>();
+                List<int> scratchCodes = new List<int>();
 
                 while (scratchCodes.size() < SCRATCH_CODES)
                 {
@@ -477,14 +453,14 @@ namespace TwoStepAuthenticator
                 }
             }
 
-            @Override
+             
         public boolean authorize(String secret, int verificationCode)
                 throws AuthenticatorException
         {
                 return authorize(secret, verificationCode, new Date().getTime());
             }
 
-            @Override
+             
         public boolean authorize(String secret, int verificationCode, long time)
                 throws AuthenticatorException
         {
@@ -508,14 +484,14 @@ namespace TwoStepAuthenticator
                         this.config.getWindowSize());
             }
 
-            @Override
+             
         public boolean authorizeUser(String userName, int verificationCode)
                 throws AuthenticatorException
         {
                 return authorizeUser(userName, verificationCode, new Date().getTime());
             }
 
-            @Override
+             
         public boolean authorizeUser(String userName, int verificationCode, long time) throws AuthenticatorException
         {
                 ICredentialRepository repository = getValidCredentialRepository();
@@ -574,7 +550,7 @@ public ICredentialRepository getCredentialRepository()
         return this.credentialRepository;
     }
 
-@Override
+ 
     public void setCredentialRepository(ICredentialRepository repository)
 {
     this.credentialRepository = repository;

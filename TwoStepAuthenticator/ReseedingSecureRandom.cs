@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,11 +11,11 @@ namespace TwoStepAuthenticator
     {
         private const int MAX_OPERATIONS = 1_000_000;
         private  String provider;
-    private  String algorithm;
-    private  AtomicInteger count = new AtomicInteger(0);
-        private SecureRandom secureRandom;
+        private  String algorithm;
+        private  int count = new int();
+        private RNGCryptoServiceProvider secureRandom;
         
-    ReseedingSecureRandom()
+       public  ReseedingSecureRandom()
         {
             this.algorithm = null;
             this.provider = null;
@@ -22,7 +23,7 @@ namespace TwoStepAuthenticator
             buildSecureRandom();
         }
         
-    ReseedingSecureRandom(String algorithm)
+    public ReseedingSecureRandom(String algorithm)
         {
             if (algorithm == null)
             {
@@ -35,7 +36,7 @@ namespace TwoStepAuthenticator
             buildSecureRandom();
         }
 
-        ReseedingSecureRandom(String algorithm, String provider)
+        public ReseedingSecureRandom(String algorithm, String provider)
         {
             if (algorithm == null)
             {
@@ -59,55 +60,45 @@ namespace TwoStepAuthenticator
             {
                 if (this.algorithm == null && this.provider == null)
                 {
-                    this.secureRandom = new SecureRandom();
+                    this.secureRandom = new RNGCryptoServiceProvider();
                 }
                 else if (this.provider == null)
                 {
-                    this.secureRandom = SecureRandom.getInstance(this.algorithm);
+                    this.secureRandom = new RNGCryptoServiceProvider(this.algorithm);
                 }
                 else
                 {
-                    this.secureRandom = SecureRandom.getInstance(this.algorithm, this.provider);
+                    this.secureRandom = new RNGCryptoServiceProvider(this.provider);
                 }
             }
-            catch (NoSuchAlgorithmException e)
+            catch (Exception e)
             {
-                throw new GoogleAuthenticatorException(
-                        String.format(
+                throw new AuthenticatorException(
+                        String.Format(
                                 "Could not initialise SecureRandom with the specified algorithm: %s. " +
                                         "Another provider can be chosen setting the %s system property.",
                                 this.algorithm,
-                                GoogleAuthenticator.RNG_ALGORITHM
+                                 Authenticator.RNG_ALGORITHM
                         ), e
                 );
             }
-            catch (NoSuchProviderException e)
-            {
-                throw new GoogleAuthenticatorException(
-                        String.format(
-                                "Could not initialise SecureRandom with the specified provider: %s. " +
-                                        "Another provider can be chosen setting the %s system property.",
-                                this.provider,
-                                GoogleAuthenticator.RNG_ALGORITHM_PROVIDER
-                        ), e
-                );
-            }
+           
         }
 
         void nextBytes(byte[] bytes)
         {
-            if (count.incrementAndGet() > MAX_OPERATIONS)
+            if (++count > MAX_OPERATIONS)
             {
-                synchronized(this) {
-                    if (count.get() > MAX_OPERATIONS)
+                lock(this) {
+                    if (count > MAX_OPERATIONS)
                     {
                         buildSecureRandom();
-                        count.set(0);
+
                     }
                 }
             }
 
-            this.secureRandom.nextBytes(bytes);
+            this.secureRandom.GetNonZeroBytes(bytes);
         }
     }
 }

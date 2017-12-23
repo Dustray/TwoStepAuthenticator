@@ -58,7 +58,7 @@ namespace TwoStepAuthenticator
         }
 
         /**
-         * Returns an integer value representing the number of windows of size
+         * Returns an int value representing the number of windows of size
          * timeStepSizeInMillis that are checked during the validation process,
          * to account for differences between the server and the client clocks.
          * The bigger the window, the more tolerant the library code is about
